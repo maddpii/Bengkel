@@ -537,8 +537,8 @@
                     <span class="brand-badge">
                         <i class="fa fa-car"></i>
                         Bengkel Mobil
-                    </span>
-                    <h1 class="brand-title">Satu akses untuk <span>operasional bengkel</span> yang lebih tertata.</h1>
+                    </span> 
+                    <h1 class="brand-title">Digitalisasi Bengkel Anda untuk <span>Layanan yang Lebih </span> Maksimal.</h1>
                     <p class="brand-copy">
                         Kelola booking, progres servis, penggunaan sparepart, dan transaksi pelanggan dalam satu sistem yang ringkas, jelas, dan siap dipakai setiap hari.
                     </p>
