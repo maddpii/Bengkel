@@ -1,0 +1,90 @@
+upstream laravel_backend {
+   server app:9000;
+}
+
+server {
+    listen 80;
+    server_name 192.168.123.8 bengkel.com; # Tambahkan IP kamu di sini
+    return 301 https://$host$request_uri;
+}
+
+server {
+    listen 443 ssl;
+    server_name 192.168.123.8 bengkel.com; # Tambahkan IP kamu di sini
+
+    ssl_certificate /etc/nginx/ssl/bengkel.crt;
+    ssl_certificate_key /etc/nginx/ssl/bengkel.key;
+
+    ssl_protocols TLSv1.2 TLSv1.3;
+    ssl_ciphers HIGH:!aNULL:!MD5;
+
+    root /var/www/html/public;
+    index index.php index.html;
+
+    error_log  /var/log/nginx/error.log;
+    access_log /var/log/nginx/access.log;
+
+    location / {
+        try_files $uri $uri/ /index.php?$query_string;
+    }
+
+    location ~ \.php$ {
+        fastcgi_pass laravel_backend;
+        fastcgi_index index.php;
+        include fastcgi_params;
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        fastcgi_param PATH_INFO $fastcgi_path_info;
+    }
+
+    location ~ /\.ht {
+        deny all;
+    }
+}
+
+
+YANG BARU
+
+upstream laravel_backend {
+    server app:9000;
+}
+
+server {
+    listen 80;
+    server_name 10.10.10.14 bengkelrapii.com;
+    return 301 https://$host$request_uri;
+}
+
+server {
+    listen 443 ssl;
+    server_name 10.10.10.14 bengkelrapii.com;
+
+    ssl_certificate /etc/nginx/ssl/bengkel.crt;
+    ssl_certificate_key /etc/nginx/ssl/bengkel.key;
+
+    ssl_protocols TLSv1.2 TLSv1.3;
+    ssl_ciphers HIGH:!aNULL:!MD5;
+
+    # Root diarahkan ke /var/www/public karena workdir berubah ke /var/www
+    root /var/www/public;
+    index index.php index.html;
+
+    error_log  /var/log/nginx/error.log;
+    access_log /var/log/nginx/access.log;
+
+    location / {
+        try_files $uri $uri/ /index.php?$query_string;
+    }
+
+    location ~ \.php$ {
+        fastcgi_pass laravel_backend;
+        fastcgi_index index.php;
+        include fastcgi_params;
+        # Penyesuaian path SCRIPT_FILENAME
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        fastcgi_param PATH_INFO $fastcgi_path_info;
+    }
+
+    location ~ /\.ht {
+        deny all;
+    }
+}

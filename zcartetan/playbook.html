@@ -1,0 +1,110 @@
+---
+- name: Setup DNS Bind9 dan Docker Engine - Bengkel Project
+  hosts: server
+  become: yes
+
+  tasks:
+
+    # =========================
+    # 1. INSTALL PACKAGE DASAR
+    # =========================
+    - name: Install package dasar
+      apt:
+        name:
+          - bind9
+          - dnsutils
+          - apt-transport-https
+          - ca-certificates
+          - curl
+          - gnupg
+          - lsb-release
+        state: present
+        update_cache: yes
+
+    # =========================
+    # 2. KONFIGURASI DNS BIND9
+    # =========================
+    - name: Konfigurasi forwarders DNS
+      copy:
+        dest: /etc/bind/named.conf.options
+        content: |
+          options {
+              directory "/var/cache/bind";
+
+              forwarders {
+                  8.8.8.8;
+                  1.1.1.1;
+              };
+
+              dnssec-validation auto;
+              listen-on-v6 { any; };
+          };
+
+    - name: Tambahkan zone bengkelrapii.com
+      copy:
+        dest: /etc/bind/named.conf.local
+        content: |
+          zone "bengkelrapii.com" {
+              type master;
+              file "/etc/bind/db.bengkelrapii";
+          };
+
+    - name: Buat file zone bengkelrapii.com
+      copy:
+        dest: /etc/bind/db.bengkelrapii
+        content: |
+          $TTL 604800
+          @   IN  SOA bengkelrapii.com. root.bengkelrapii.com. (
+                  2
+                  604800
+                  86400
+                  2419200
+                  604800 )
+
+          @       IN  NS      ns.bengkelrapii.com.
+          ns      IN  A       192.168.1.11
+          @       IN  A       192.168.1.11
+          www     IN  A       192.168.1.11
+
+    # =========================
+    # 3. INSTALL DOCKER ENGINE
+    # =========================
+    - name: Buat folder keyrings
+      file:
+        path: /etc/apt/keyrings
+        state: directory
+        mode: '0755'
+
+    - name: Download Docker GPG key
+      shell: |
+        curl -fsSL https://download.docker.com/linux/ubuntu/gpg | \
+        gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+      args:
+        creates: /etc/apt/keyrings/docker.gpg
+
+    - name: Tambahkan repository Docker
+      apt_repository:
+        repo: "deb [arch=amd64 signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable"
+        state: present
+
+    - name: Install Docker Engine dan Compose
+      apt:
+        name:
+          - docker-ce
+          - docker-ce-cli
+          - containerd.io
+          - docker-compose-plugin
+        state: present
+        update_cache: yes
+
+    # =========================
+    # 4. ENABLE & RESTART SERVICE
+    # =========================
+    - name: Restart dan enable service
+      service:
+        name: "{{ item }}"
+        state: restarted
+        enabled: yes
+      loop:
+        - bind9
+        - docker
