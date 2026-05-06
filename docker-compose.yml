@@ -15,7 +15,7 @@ services:
     networks:
       - uji-net
     volumes:
-      - laravel_data:/var/www
+      - ./:/var/www
 
   db:
     image: mysql:8.0

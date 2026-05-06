@@ -32,11 +32,6 @@ COPY . /var/www
 # Install dependency Laravel
 RUN composer install --no-interaction --prefer-dist --optimize-autoloader
 
-# Install Vite
-RUN npm install
-
-# Build asset
-RUN npm run build
 
 # Permission
 RUN chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache
