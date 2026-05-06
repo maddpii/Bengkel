@@ -1,0 +1,11 @@
+.git
+.github
+.env
+node_modules
+vendor
+storage/logs/*
+bootstrap/cache/*
+npm-debug.log
+yarn-error.log
+.editorconfig
+.styleci.yml
