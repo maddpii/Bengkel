@@ -1,44 +1,17 @@
 FROM php:8.2-fpm
 
-WORKDIR /var/www
+RUN apt update && apt install -y \
+    git unzip curl \
+    && docker-php-ext-install pdo pdo_mysql
 
-RUN apt-get update && apt-get install -y \
-    build-essential \
-    libpng-dev \
-    libjpeg62-turbo-dev \
-    libfreetype6-dev \
-    locales \
-    zip \
-    jpegoptim optipng pngquant gifsicle \
-    vim \
-    unzip \
-    git \
-    curl \
-    libzip-dev \
-    libonig-dev
-
-
-# Install ekstensi PHP Laravel
-RUN docker-php-ext-install pdo_mysql mbstring zip exif pcntl
-RUN docker-php-ext-configure gd --with-freetype --with-jpeg
-RUN docker-php-ext-install gd
-
-# Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Copy project
-COPY . /var/www
+WORKDIR /var/www
 
-# Install dependency Laravel
-RUN composer install --no-interaction --prefer-dist --optimize-autoloader
+COPY . .
 
-RUN chmod 1777 /tmp
-RUN chown -R www-data:www-data /var/www
-
-
-# Permission
-RUN chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache
-
+RUN composer install --optimize-autoloader --no-dev
+RUN php artisan config:clear
+RUN chmod -R 777 storage bootstrap/cache
 EXPOSE 9000
-
 CMD ["php-fpm"]
