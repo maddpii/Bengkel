@@ -32,6 +32,9 @@ COPY . /var/www
 # Install dependency Laravel
 RUN composer install --no-interaction --prefer-dist --optimize-autoloader
 
+RUN chmod 1777 /tmp
+RUN chown -R www-data:www-data /var/www
+
 
 # Permission
 RUN chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache
