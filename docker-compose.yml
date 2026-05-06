@@ -1,6 +1,6 @@
 services:
   app:
-    image: ahmadrafii07/webujikom:1.0
+    image: ahmadrafii07/webujikom:1.2
     build:
       context: .
       dockerfile: Dockerfile
