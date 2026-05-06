@@ -21,3 +21,4 @@ RUN mkdir -p storage/logs bootstrap/cache \
 EXPOSE 9000
 
 CMD ["php-fpm"]
+

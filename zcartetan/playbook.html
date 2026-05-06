@@ -5,9 +5,7 @@
 
   tasks:
 
-    # =========================
-    # 1. INSTALL PACKAGE DASAR
-    # =========================
+   
     - name: Install package dasar
       apt:
         name:
@@ -21,9 +19,7 @@
         state: present
         update_cache: yes
 
-    # =========================
-    # 2. KONFIGURASI DNS BIND9
-    # =========================
+   
     - name: Konfigurasi forwarders DNS
       copy:
         dest: /etc/bind/named.conf.options
@@ -66,9 +62,7 @@
           @       IN  A       192.168.1.11
           www     IN  A       192.168.1.11
 
-    # =========================
-    # 3. INSTALL DOCKER ENGINE
-    # =========================
+    
     - name: Buat folder keyrings
       file:
         path: /etc/apt/keyrings

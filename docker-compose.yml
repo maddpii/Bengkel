@@ -4,7 +4,6 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: bengkel-app-1
     restart: always
     depends_on:
       - db
@@ -47,7 +46,7 @@ services:
     ports:
       - "80:80"
     volumes:
-      - .:/var/www/html:ro
+      - .:/var/www/html
       - public_storage:/var/www/html/public/storage:ro
       - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
     networks:
